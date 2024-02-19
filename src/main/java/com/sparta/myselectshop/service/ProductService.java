@@ -24,9 +24,10 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    private final ProductFolderRepository productFolderRepository;
+
     private final FolderRepository folderRepository;
 
-    private final ProductFolderRepository productFolderRepository;
 
     public static final int MIN_MY_PRICE = 100;
 
