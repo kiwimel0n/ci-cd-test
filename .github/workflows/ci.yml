@@ -26,11 +26,11 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
 
-    - name: make application.yml
-      run: |
-        # create application.yml
-        mkdir -p src/main/resources
-        echo "${{ secrets.DATABASE_PROD }}" > src/main/resources/application.yml
+   # - name: make application.yml
+   #   run: |
+  #       create application.yml
+   #     mkdir -p src/main/resources
+    #    echo "${{ secrets.DATABASE_PROD }}" > src/main/resources/application.yml
 
     - name: Build with Gradle
       run: |

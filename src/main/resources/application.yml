@@ -1,5 +1,8 @@
-# 기본 설정
+---
 spring:
   config:
-    activate:
-      on-profile: prod # 기본 프로파일을 dev로 설정
+    import:
+      - classpath:/yaml/application-prod.yml
+      - classpath:/yaml/application-dev.yml
+  profiles:
+    active: prod
