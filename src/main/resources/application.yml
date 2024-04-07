@@ -1,0 +1,5 @@
+# 기본 설정
+spring:
+  config:
+    activate:
+      on-profile: prod # 기본 프로파일을 dev로 설정
