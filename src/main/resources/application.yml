@@ -6,3 +6,4 @@ spring:
       - classpath:/yaml/application-dev.yml
   profiles:
     active: prod
+
