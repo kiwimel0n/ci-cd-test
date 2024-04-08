@@ -41,13 +41,17 @@ jobs:
           echo "No tags found, setting initial version as v1.0.0"
           echo "v1.0.0"
         else
-          echo ::set-output name=TAG::$latest_tag
+          echo "$latest_tag"
         fi
 
     - name: Generate next version
       id: next_version
-      run: echo ::set-output name=NEW_TAG::v$(echo "${{ steps.get_tag.outputs.TAG }}" | cut -c 2- | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-
+      run: |
+         if [ -z "$latest_tag" ]; then
+          echo "v1.0.0"
+         else
+          echo "${latest_tag//[^0-9]/}" | awk '{$NF = $NF + 1;} 1' | sed 's/ /./g' | awk '{$1="v"$1; print}'
+         fi
 
     - name: Build with Gradle
       run: |
@@ -67,5 +71,11 @@ jobs:
       run: |
         docker push ${{ secrets.DOCKER_REPO }}:${{ steps.next_version.outputs.NEW_TAG }}
         docker push ${{ secrets.DOCKER_REPO }}:latest
+
+
+    - name: Push new tag to GitHub repository
+      if: steps.get_tag.outputs.TAG != 'v1.0.0'  # Only push tag if it's not the initial version
+      run: |
+        git tag ${{ steps.next_version.outputs.NEW_TAG }} && git push origin ${{ steps.next_version.outputs.NEW_TAG }}
 
 
