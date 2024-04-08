@@ -57,6 +57,8 @@ jobs:
       run: docker tag ${{ secrets.DOCKER_REPO }} ${{ secrets.DOCKER_REPO }}:${{ steps.next_version.outputs.NEW_TAG }}
 
     - name: Push Docker image to Docker Hub
-      run: docker push ${{ secrets.DOCKER_REPO }}:${{ steps.next_version.outputs.NEW_TAG }}
+      run: |
+        docker push ${{ secrets.DOCKER_REPO }}:${{ steps.next_version.outputs.NEW_TAG }}
+        docker push ${{ secrets.DOCKER_REPO }}:latest
 
 
