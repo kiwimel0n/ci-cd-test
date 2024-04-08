@@ -32,6 +32,16 @@ jobs:
    #     mkdir -p src/main/resources
     #    echo "${{ secrets.DATABASE_PROD }}" > src/main/resources/application.yml
 
+
+    - name: Get latest tag
+       id:get-tag
+      run: echo ::set-output name=TAG::$(git describe --tags `git rev-list --tags --max-count=1`)
+
+    - name: Generate next version
+      id: next_version
+      run: echo ::set-output name=NEW_TAG::v$(echo "${{ steps.get_tag.outputs.TAG }}" | cut -c 2- | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+
+
     - name: Build with Gradle
       run: |
         chmod +x ./gradlew
@@ -42,4 +52,11 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_REPO }} .
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/test2
+        
+    - name: Tag Docker image with next version
+      run: docker tag ${{ secrets.DOCKER_REPO }} ${{ secrets.DOCKER_REPO }}:${{ steps.next_version.outputs.NEW_TAG }}
+
+    - name: Push Docker image to Docker Hub
+      run: docker push ${{ secrets.DOCKER_REPO }}:${{ steps.next_version.outputs.NEW_TAG }}
+
+
